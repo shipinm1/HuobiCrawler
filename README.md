@@ -10,5 +10,5 @@ Gathering useful information upon one desire
 
 1. Coin price scan (on going)  
 1. Trading information sorting (on going)  
-3. Currently required python 3.5+ with "requests" and "BeautifulSoup" library to run
-   UI coming up next
+3. Currently required python 3.5+ with "requests" and "BeautifulSoup4" library to run  
+4. Ready to be intergrate with .Net framework  
