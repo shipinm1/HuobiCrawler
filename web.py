@@ -2,29 +2,42 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
+import sqlite3
+import math
+
 
 def main():
+
 	startTime = time.time()
-	totalPageNumber, soup = getTotalPageNumber()
-	print("This is first page: ", getInfoFromSoup(soup)) #printing out the first page seperatly
-	for i in range (2,totalPageNumber):
-		time.sleep(0.1)
-		print("preparing page: " + str(i))
-		soup = rerest(i)
-		print("This is " + str(i) + " page: ", getInfoFromSoup(soup))
+	tokens = ['buy', 'sell']
+	for token in tokens:
+		stackHolder = []
+		totalPageNumber, soup = getTotalPageNumber(token)
+		stackHolder.extend(getInfoFromSoup(soup))
+		totalPageNumber = math.ceil(totalPageNumber * 0.7) #only interested in the upper 70% of the output(estimated)
+		for i in range (2, totalPageNumber):
+			time.sleep(0.1)
+			soup = makeSoup(i, token)
+			stackHolder.extend(getInfoFromSoup(soup))
+			print("Compeletion: ", i, "-", totalPageNumber,", Token=",token ,end='\r' )
+		print()
+		#database operation---------------
+		sendToDatabase(stackHolder, token)
+		#---------------------------------
+
 	endTime = time.time()
 	print("Total time consume: ", endTime - startTime)
 
 # get data from specific page number
 # return soup object
-def rerest(pageNum):
-	start = "https://otc-api.eiijo.cn/v1/data/trade-market?country=37&currency=1&payMethod=0&currPage=" + str(pageNum) + "&coinId=2&tradeType=sell&blockType=general&online=1"
+def makeSoup(pageNum, token):
+	start = "https://otc-api.eiijo.cn/v1/data/trade-market?country=37&currency=1&payMethod=0&currPage=" + str(pageNum) + "&coinId=2&tradeType=" + token + "&blockType=general&online=1"
 	soup = BeautifulSoup(requests.get(start).content, features = "lxml")
 	return soup
 
 # get total  page number from first page for itteration
-def getTotalPageNumber():
-	soup = rerest(1)
+def getTotalPageNumber(token):
+	soup = makeSoup(1, token)
 	p = soup.select('p')
 	#matchObj = re.search( r'totalPage\W\W(.*)\W\WcurrPage', str(p)) --------also works
 	matchObj = re.search(r'totalPage":(.*),"currPage', str(p))
@@ -49,4 +62,20 @@ def getInfoFromSoup(soup):
 			holder[-1].extend(re.findall(r'[-+]?\d*\.\d+|\d+', item[1]))
 			temp *= -1
 	return holder
+
+#sending data to the database
+def sendToDatabase(info, table):
+	conn = sqlite3.connect('huobidata.db')
+	print("Database connected")
+	c = conn.cursor()
+	c.execute("DELETE FROM '%s'" % table)
+	for item in info:
+		#print("INSERT INTO sell VALUES (?,?,?,?,?)", item)
+		#c.execute("INSERT OR REPLACE INTO sell VALUES(12367, 2, 3, 4, 5)")
+		c.execute("INSERT OR REPLACE INTO '%s' VALUES (?,?,?,?,?)" % table ,item)
+	conn.commit()
+	print("Database closed")
+	conn.close()		
+	pass
+
 main()
