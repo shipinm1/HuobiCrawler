@@ -6,9 +6,8 @@ import sqlite3
 import math
 
 
-def main():
+def web():
 
-	startTime = time.time()
 	tokens = ['buy', 'sell']
 	for token in tokens:
 		stackHolder = []
@@ -24,9 +23,6 @@ def main():
 		#database operation---------------
 		sendToDatabase(stackHolder, token)
 		#---------------------------------
-
-	endTime = time.time()
-	print("Total time consume: ", endTime - startTime)
 
 # get data from specific page number
 # return soup object
@@ -77,5 +73,3 @@ def sendToDatabase(info, table):
 	print("Database closed")
 	conn.close()		
 	pass
-
-main()
