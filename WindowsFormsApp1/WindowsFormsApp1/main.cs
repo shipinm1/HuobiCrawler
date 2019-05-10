@@ -44,41 +44,52 @@ namespace WindowsFormsApp1
             sqlcon.Close();
         }
 
-        public void getSell() {
-            string sql = "select * from buy order by price,minimum asc;";
-
-            SQLiteDataAdapter adapter = new SQLiteDataAdapter(sql, sqlcon);
-            SQLiteCommandBuilder command = new SQLiteCommandBuilder(adapter);
-            DataTable dt = new DataTable();
-
-            adapter.Fill(dt);
-            List<string> ls;
-            string x;
-            string price = "";
-            lowsellprice.Text = dt.Rows[0]["price"].ToString();
-            foreach (DataRow myRow in dt.Rows)
+        public void getSell()
+        {
+            buyBox.Items.Clear();
+            sellBox.Items.Clear();
+            string[] tokens = new string[] { "buy ", "sell " };
+            foreach (string token in tokens)
             {
-                ls = new List<string>();
-                x = "";
-                foreach (DataColumn myColumn in dt.Columns)
+                Debug.WriteLine(token);
+                string sql = "select * from " + token + "order by price,minimum asc;";
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(sql, sqlcon);
+                SQLiteCommandBuilder command = new SQLiteCommandBuilder(adapter);
+                DataTable dt = new DataTable();
+                
+                adapter.Fill(dt);
+                List<string> ls;
+                string x;
+                string price = "";
+                if (token == "buy ") lowbuyprice.Text = dt.Rows[0]["price"].ToString();
+                else lowsellprice.Text = dt.Rows[0]["price"].ToString();
+                foreach (DataRow myRow in dt.Rows)
                 {
-                    // Console.Write(myRow[myColumn] + "\t");
-                    ls.Add(myRow[myColumn].ToString());
-                }
-                if (price.CompareTo(ls[3]) == 0)
-                {
-                    x = string.Format("{0, -10} {1,-10} {2,-10} {3, -10} {4, -10} \n", ls[0], ls[1], ls[2], ls[3], ls[4]);
-                    sellBox.Items.Add(x);
-                }
-                else
-                {
-                    price = ls[3];
-                    sellBox.Items.Add("**********************************************");
-                    x = string.Format("{0, -10} {1,-10} {2,-10} {3, -10} {4, -10} \n", ls[0], ls[1], ls[2], ls[3], ls[4]);
-                    sellBox.Items.Add(x);
-                }
+                    ls = new List<string>();
+                    x = "";
+                    foreach (DataColumn myColumn in dt.Columns)
+                    {
+                        // Console.Write(myRow[myColumn] + "\t");
+                        ls.Add(myRow[myColumn].ToString());
+                    }
+                    if (price.CompareTo(ls[3]) == 0)
+                    {
+                        x = string.Format("{0, -10} {1,-10} {2,-10} {3, -10} {4, -10} \n", ls[0], ls[1], ls[2], ls[3], ls[4]);
+                        if (token == "buy ") buyBox.Items.Add(x);
+                        else sellBox.Items.Add(x);
+                    }
+                    else
+                    {
+                        price = ls[3];
+                        if (token == "buy ")  buyBox.Items.Add("**********************************************");
+                        else sellBox.Items.Add("**********************************************");
+                        x = string.Format("{0, -10} {1,-10} {2,-10} {3, -10} {4, -10} \n", ls[0], ls[1], ls[2], ls[3], ls[4]);
+                        if (token == "buy ") buyBox.Items.Add(x);
+                        else sellBox.Items.Add(x);
+                    }
 
-                Console.WriteLine($"{x}");
+                    Console.WriteLine($"{x}");
+                }
             }
         }
 
@@ -103,6 +114,8 @@ namespace WindowsFormsApp1
         //Run the python function to scan update database
         private void load_Click(object sender, EventArgs e)
         {
+            backPanel.Visible = true;
+            backPanel.Location = load.Location;
             var psi = new ProcessStartInfo();
             psi.FileName = @"B:\python\python.exe";
             psi.UseShellExecute = false;
@@ -116,6 +129,8 @@ namespace WindowsFormsApp1
         //Stop EveryThing
         private void button1_Click(object sender, EventArgs e)
         {
+            backPanel.Visible = true;
+            backPanel.Location = button1.Location;
             try
             {
                 foreach (Process proc in Process.GetProcessesByName("python"))
@@ -143,13 +158,6 @@ namespace WindowsFormsApp1
                 MessageBox.Show(ex.Message);
             }
         }
-
-
-
-
-        // 
-
-
-
+     
     }
 }
