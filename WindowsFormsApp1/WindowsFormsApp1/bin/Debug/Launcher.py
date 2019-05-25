@@ -6,9 +6,9 @@ def main():
 	while True:
 		starttime = time.time()
 		web()
-		for i in range (1,30):
-			print("sleeping: ", i, "- 30.", end='\r')
-			time.sleep(1)
+		# for i in range (1,2):
+		# 	print("sleeping: ", i, "- 5.", end='\r')
+		# 	time.sleep(1)
 		print()
 		print("Total time consumed: ", time.time() - starttime)
 main()
