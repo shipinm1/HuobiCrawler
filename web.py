@@ -15,7 +15,6 @@ def web():
 		stackHolder.extend(getInfoFromSoup(soup))
 		totalPageNumber = math.ceil(totalPageNumber * 0.7) #only interested in the upper 70% of the output(estimated)
 		for i in range (2, totalPageNumber):
-			time.sleep(0.1)
 			soup = makeSoup(i, token)
 			stackHolder.extend(getInfoFromSoup(soup))
 			print("Compeletion: ", i, "-", totalPageNumber,", Token=",token ,end='\r' )

@@ -64,6 +64,9 @@ namespace WindowsFormsApp1
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.lastFreshTime = new System.Windows.Forms.Label();
+            this.pauseButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -168,13 +171,13 @@ namespace WindowsFormsApp1
             // 
             // timer1
             // 
-            this.timer1.Interval = 10000;
+            this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(3, 94);
-            this.progressBar1.Maximum = 10;
+            this.progressBar1.Maximum = 5;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(265, 23);
             this.progressBar1.Step = 1;
@@ -366,11 +369,43 @@ namespace WindowsFormsApp1
             this.label16.TabIndex = 24;
             this.label16.Text = "ID";
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(25, 570);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(102, 18);
+            this.label17.TabIndex = 29;
+            this.label17.Text = "上次刷新时间:";
+            // 
+            // lastFreshTime
+            // 
+            this.lastFreshTime.AutoSize = true;
+            this.lastFreshTime.Location = new System.Drawing.Point(133, 574);
+            this.lastFreshTime.Name = "lastFreshTime";
+            this.lastFreshTime.Size = new System.Drawing.Size(41, 13);
+            this.lastFreshTime.TabIndex = 30;
+            this.lastFreshTime.Text = "label18";
+            // 
+            // pauseButton
+            // 
+            this.pauseButton.Location = new System.Drawing.Point(915, 31);
+            this.pauseButton.Name = "pauseButton";
+            this.pauseButton.Size = new System.Drawing.Size(75, 23);
+            this.pauseButton.TabIndex = 31;
+            this.pauseButton.Text = "暂停";
+            this.pauseButton.UseVisualStyleBackColor = true;
+            this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1166, 623);
+            this.Controls.Add(this.pauseButton);
+            this.Controls.Add(this.lastFreshTime);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
@@ -442,6 +477,9 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label lastFreshTime;
+        private System.Windows.Forms.Button pauseButton;
     }
 }
 

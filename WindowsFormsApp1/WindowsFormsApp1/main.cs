@@ -18,8 +18,8 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         public SQLiteConnection sqlcon;
-        public int count = 10;
-        
+        public int count = 5;
+        public string sql = null;
         public Form1()
         {
             InitializeComponent();
@@ -37,8 +37,9 @@ namespace WindowsFormsApp1
             //sql = "CREATE TABLE sell(UID INTEGER PRIMARY KEY, minimum REAL NOT NULL, maximum REAL NOT NULL, price REAL NOT NULL, amount REAL NOT NULL);";
             //SQLiteCommand command = new SQLiteCommand(sql, sqlcon);
             //command.ExecuteNonQuery();
-            getSell();
             
+            getSell();
+            getTime();
 
 
             sqlcon.Close();
@@ -52,7 +53,15 @@ namespace WindowsFormsApp1
             foreach (string token in tokens)
             {
                 Debug.WriteLine(token);
-                string sql = "select * from " + token + "order by price,minimum asc;";
+                if (token == "buy ")
+                {
+                    sql = "select * from sell order by price,minimum asc;";
+                }
+                else 
+                {
+                    sql = "select * from buy order by price desc, minimum asc;";
+                }
+                
                 SQLiteDataAdapter adapter = new SQLiteDataAdapter(sql, sqlcon);
                 SQLiteCommandBuilder command = new SQLiteCommandBuilder(adapter);
                 DataTable dt = new DataTable();
@@ -88,16 +97,28 @@ namespace WindowsFormsApp1
                         else sellBox.Items.Add(x);
                     }
 
-                    Console.WriteLine($"{x}");
+                    //Console.WriteLine($"{x}");
                 }
             }
+        }
+
+        public void getTime() {
+            sql = "select * from currentTime;";
+            SQLiteDataAdapter adapter = new SQLiteDataAdapter(sql, sqlcon);
+            SQLiteCommandBuilder command = new SQLiteCommandBuilder(adapter);
+            DataTable dt = new DataTable();
+
+            adapter.Fill(dt);
+            lastFreshTime.Text = dt.Rows[0]["currentTime"].ToString();
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             getSell();
+            getTime();
             progressBar1.Value = 0;
-            count = 10;
+            count = 5;
             //me.Text = count.ToString();
             //MessageBox.Show("fffff");
             
@@ -117,11 +138,11 @@ namespace WindowsFormsApp1
             backPanel.Visible = true;
             backPanel.Location = load.Location;
             var psi = new ProcessStartInfo();
-            psi.FileName = @"B:\python\python.exe";
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
+            psi.FileName = @"C:\Users\yanzh\AppData\Local\Programs\Python\Python37-32\python.exe";
+            psi.UseShellExecute = true;
+            psi.CreateNoWindow = false;
+            psi.RedirectStandardOutput = false;
+            psi.RedirectStandardError = false;
             psi.Arguments = $"\"{"Launcher.py"}";
             Process.Start(psi);
         }
@@ -164,6 +185,10 @@ namespace WindowsFormsApp1
 
         }
 
-        
+        private void pauseButton_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = false;
+            timer2.Enabled = false;
+        }
     }
 }

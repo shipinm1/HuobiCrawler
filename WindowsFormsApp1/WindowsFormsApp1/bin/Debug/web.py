@@ -13,9 +13,8 @@ def web():
 		stackHolder = []
 		totalPageNumber, soup = getTotalPageNumber(token)
 		stackHolder.extend(getInfoFromSoup(soup))
-		totalPageNumber = math.ceil(totalPageNumber * 0.7) #only interested in the upper 70% of the output(estimated)
+		totalPageNumber = math.ceil(totalPageNumber * 0.5) #only interested in the upper 70% of the output(estimated)
 		for i in range (2, totalPageNumber):
-			time.sleep(0.1)
 			soup = makeSoup(i, token)
 			stackHolder.extend(getInfoFromSoup(soup))
 			print("Compeletion: ", i, "-", totalPageNumber,", Token=",token ,end='\r' )
@@ -65,9 +64,10 @@ def sendToDatabase(info, table):
 	print("Database connected")
 	c = conn.cursor()
 	c.execute("DELETE FROM '%s'" % table)
+	c.execute("DELETE FROM currentTime")
+	currentTime = time.ctime()
+	c.execute("INSERT OR REPLACE INTO currentTime VALUES('%s')" %currentTime)
 	for item in info:
-		#print("INSERT INTO sell VALUES (?,?,?,?,?)", item)
-		#c.execute("INSERT OR REPLACE INTO sell VALUES(12367, 2, 3, 4, 5)")
 		c.execute("INSERT OR REPLACE INTO '%s' VALUES (?,?,?,?,?)" % table ,item)
 	conn.commit()
 	print("Database closed")
