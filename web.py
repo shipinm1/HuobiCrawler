@@ -65,9 +65,10 @@ def sendToDatabase(info, table):
 	print("Database connected")
 	c = conn.cursor()
 	c.execute("DELETE FROM '%s'" % table)
+	c.execute("DELETE FROM currentTime")
+	currentTime = time.ctime()
+	c.execute("INSERT OR REPLACE INTO currentTime VALUES('%s')" %currentTime)
 	for item in info:
-		#print("INSERT INTO sell VALUES (?,?,?,?,?)", item)
-		#c.execute("INSERT OR REPLACE INTO sell VALUES(12367, 2, 3, 4, 5)")
 		c.execute("INSERT OR REPLACE INTO '%s' VALUES (?,?,?,?,?)" % table ,item)
 	conn.commit()
 	print("Database closed")
